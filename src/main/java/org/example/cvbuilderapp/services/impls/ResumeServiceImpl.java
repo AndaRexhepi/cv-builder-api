@@ -1,0 +1,239 @@
+package org.example.cvbuilderapp.services.impls;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.cvbuilderapp.dtos.resume.CreateResumeRequest;
+import org.example.cvbuilderapp.dtos.resume.ResumeDto;
+import org.example.cvbuilderapp.dtos.resume.UpdateResumeRequest;
+import org.example.cvbuilderapp.entities.*;
+import org.example.cvbuilderapp.exceptions.objective.ObjectiveNotFoundException;
+import org.example.cvbuilderapp.exceptions.profile.ProfileNotFoundException;
+import org.example.cvbuilderapp.exceptions.resume.ResumeNotFoundException;
+import org.example.cvbuilderapp.exceptions.user.UserNotFoundException;
+import org.example.cvbuilderapp.mappers.impls.ProfileMapper;
+import org.example.cvbuilderapp.mappers.impls.ResumeMapper;
+import org.example.cvbuilderapp.repositories.*;
+import org.example.cvbuilderapp.services.interfaces.ProfileService;
+import org.example.cvbuilderapp.services.interfaces.ResumeService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ResumeServiceImpl implements ResumeService {
+
+    public final ResumeRepository resumeRepository;
+    public final UserRepository userRepository;
+    public final EducationRepository educationRepository;
+    public final PursuitRepository pursuitRepository;
+    public final ExperienceRepository  experienceRepository;
+    public final SkillRepository skillRepository;
+    public final ObjectiveRepository objectiveRepository;
+    public final RefereeRepository refereeRepository;
+    public final AccoladeRepository accoladeRepository;
+    public final ProfileRepository profileRepository;
+    public final ProfileService profileService;
+    public final ResumeMapper mapper;
+    public final ProfileMapper profileMapper;
+
+    @Override
+    public List<ResumeDto> findAll() {
+        return mapper.toDto(resumeRepository.findAll());
+    }
+
+    @Override
+    public ResumeDto findById(Long id) {
+        var resumeFromDb = resumeRepository.findById(id)
+                .orElseThrow(()-> new ResumeNotFoundException(id));
+        return mapper.toDto(resumeFromDb);
+    }
+
+    @Override
+    @Transactional
+    public ResumeDto create(CreateResumeRequest request) {
+        Resume resume = new Resume();
+
+        if (request.getUserId() != null) {
+            User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new UserNotFoundException(request.getUserId()));
+            resume.setUser(user);
+
+        }
+
+        if (request.getProfileId() != null) {
+            Profile profile = profileRepository.findById(request.getProfileId())
+                    .orElseThrow(() -> new ProfileNotFoundException(request.getProfileId()));
+            profile.setResume(resume);
+            resume.setProfile(profile);
+        }
+
+        if (request.getObjectiveId() != null){
+            Objective objective = objectiveRepository.findById(request.getObjectiveId())
+                    .orElseThrow(()-> new ObjectiveNotFoundException(request.getObjectiveId()));
+            objective.setResume(resume);
+            resume.setObjective(objective);
+        }
+
+        if (request.getEducationIds()  != null){
+            List<Education> educations = educationRepository.findAllById(request.getEducationIds());
+            educations.forEach( education -> education.setResume(resume));
+            resume.setEducation(educations);
+        }
+
+        if (request.getExperienceIds()  != null){
+            List<Experience> experiences = experienceRepository.findAllById(request.getExperienceIds());
+            experiences.forEach( experience -> experience.setResume(resume));
+            resume.setExperience(experiences);
+        }
+
+        if (request.getSkillIds() != null){
+            List<Skill> skills = skillRepository.findAllById(request.getSkillIds());
+            skills.forEach(skill -> skill.setResume(resume));
+            resume.setSkill(skills);
+        }
+
+        if (request.getPursuitIds() != null){
+            List<Pursuit> pursuits = pursuitRepository.findAllById(request.getPursuitIds());
+            pursuits.forEach(pursuit -> pursuit.setResume(resume));
+            resume.setPursuit(pursuits);
+        }
+
+        if (request.getReferenceIds() != null){
+            List<Referee> referees = refereeRepository.findAllById(request.getReferenceIds());
+            referees.forEach(referee -> referee.setResume(resume));
+            resume.setReference(referees);
+        }
+
+        if (request.getAccoladeIds() != null){
+            List<Accolade> accolades = accoladeRepository.findAllById(request.getAccoladeIds());
+            accolades.forEach(accolade -> accolade.setResume(resume));
+            resume.setAccolade(accolades);
+        }
+
+        resumeRepository.save(resume);
+
+
+        return mapper.toDto(resume);
+    }
+
+    @Override
+    public void update(Long id, UpdateResumeRequest request) {
+        Resume resumeFromDb = resumeRepository.findById(id)
+                .orElseThrow(() -> new ResumeNotFoundException(id));
+
+        if (request.getProfileId() != null) {
+            Profile profile = profileRepository.findById(request.getProfileId())
+                            .orElseThrow(()-> new ProfileNotFoundException(request.getProfileId()));
+            profile.setResume(resumeFromDb);
+            resumeFromDb.setProfile(profile);
+        }
+
+        if (request.getObjectiveId() != null) {
+            Objective objective = objectiveRepository.findById(request.getObjectiveId())
+                    .orElseThrow(() -> new ObjectiveNotFoundException(request.getObjectiveId()));
+            objective.setResume(resumeFromDb);
+            resumeFromDb.setObjective(objective);
+        }
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getEducation(),
+                request.getEducationIds(),
+                educationRepository,
+                (education, resume) -> education.setResume(resume)
+        );
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getExperience(),
+                request.getExperienceIds(),
+                experienceRepository,
+                (experience, resume) -> experience.setResume(resume)
+        );
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getSkill(),
+                request.getSkillIds(),
+                skillRepository,
+                (skill, resume) -> skill.setResume(resume)
+        );
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getPursuit(),
+                request.getPursuitIds(),
+                pursuitRepository,
+                (pursuit, resume) -> pursuit.setResume(resume)
+        );
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getReference(),
+                request.getReferenceIds(),
+                refereeRepository,
+                (referee, resume) -> referee.setResume(resume)
+        );
+
+        updateResumeCollection(
+                resumeFromDb,
+                resumeFromDb.getAccolade(),
+                request.getAccoladeIds(),
+                accoladeRepository,
+                (accolade, resume) -> accolade.setResume(resume)
+        );
+        resumeRepository.save(resumeFromDb);
+    }
+
+    @Override
+    public void delete(Long id) {
+        var resumeFromDb = resumeRepository.findById(id)
+                .orElseThrow(()-> new ResumeNotFoundException(id));
+        resumeRepository.delete(resumeFromDb);
+    }
+
+
+    private <T> void updateResumeCollection(
+            Resume resume,
+            List<T> currentCollection,
+            List<Long> newIds,
+            JpaRepository<T, Long> repository,
+            BiConsumer<T, Resume> setResumeFunction) {
+
+        if (newIds != null) {
+            // Get all new entities
+            List<T> newEntities = repository.findAllById(newIds);
+
+            // Clear relationship from old entities no longer in the collection
+            if (currentCollection != null) {
+                currentCollection.forEach(entity -> {
+                    if (!newEntities.contains(entity)) {
+                        setResumeFunction.accept(entity, null);
+                        repository.save(entity);
+                    }
+                });
+            }
+
+            // Set relationship for new entities
+            newEntities.forEach(entity -> {
+                setResumeFunction.accept(entity, resume);
+                repository.save(entity);
+            });
+
+            // Update the collection reference
+            if (currentCollection != null) {
+                currentCollection.clear();
+                currentCollection.addAll(newEntities);
+            }
+        }
+    }
+}
+
+

@@ -1,0 +1,48 @@
+package org.example.cvbuilderapp.controllers;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.example.cvbuilderapp.dtos.accolade.AccoladeDto;
+import org.example.cvbuilderapp.dtos.accolade.CreateAccoladeRequest;
+import org.example.cvbuilderapp.dtos.accolade.UpdateAccoladeRequest;
+import org.example.cvbuilderapp.services.AccoladeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1/accolades")
+@RequiredArgsConstructor
+public class AccoladeController {
+
+    public final AccoladeService accoladeService;
+
+    @GetMapping()
+    public ResponseEntity<List<AccoladeDto>> findAll() {
+        return ResponseEntity.ok(accoladeService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AccoladeDto> findById(@PathVariable Long id){
+        return ResponseEntity.ok(accoladeService.findById(id));
+    }
+
+    @PostMapping()
+    public ResponseEntity<AccoladeDto> create(@Valid @RequestBody CreateAccoladeRequest request){
+        return ResponseEntity.ok(accoladeService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AccoladeDto> update(@PathVariable Long id, @Valid @RequestBody UpdateAccoladeRequest request){
+        accoladeService.update(id, request);
+        return ResponseEntity.ok(accoladeService.findById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        accoladeService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

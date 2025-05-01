@@ -1,0 +1,4 @@
+package org.example.cvbuilderapp.dtos.skill;
+
+public class UpdateSkillRequest {
+}

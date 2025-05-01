@@ -1,0 +1,4 @@
+package org.example.cvbuilderapp.dtos.referee;
+
+public class RefereeDto {
+}

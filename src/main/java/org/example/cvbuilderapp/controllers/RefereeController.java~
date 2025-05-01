@@ -1,0 +1,26 @@
+package org.example.cvbuilderapp.controllers;
+
+import lombok.RequiredArgsConstructor;
+import org.example.cvbuilderapp.dtos.referee.RefereeDto;
+import org.example.cvbuilderapp.services.interfaces.RefereeService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/v1/referees")
+@RequiredArgsConstructor
+public class RefereeController {
+    public final RefereeService refereeService;
+
+    @GetMapping
+    public ResponseEntity<List<RefereeDto>> findAll(){
+        return ResponseEntity.ok(refereeService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RefereeDto> findById
+}

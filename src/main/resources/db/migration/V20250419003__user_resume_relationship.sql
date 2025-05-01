@@ -1,0 +1,16 @@
+ALTER TABLE users
+DROP
+CONSTRAINT fkhpxfj1aew35n0pfl9fsfnul3;
+
+ALTER TABLE resumes
+    ADD user_id BIGINT;
+
+ALTER TABLE resumes
+    ALTER COLUMN user_id SET NOT NULL;
+
+ALTER TABLE resumes
+    ADD CONSTRAINT FK_RESUMES_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);
+
+ALTER TABLE users
+DROP
+COLUMN resume_id;
