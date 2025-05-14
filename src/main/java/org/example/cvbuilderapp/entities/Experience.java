@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -59,7 +62,9 @@ public class Experience {
     private boolean isPresent;
 
     @ManyToOne
+    @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "resume_id")
+    @JsonManagedReference
     private Resume resume;
 
 }

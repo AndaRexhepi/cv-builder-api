@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.time.LocalDate;
 
@@ -52,6 +54,7 @@ public class Education {
     private Boolean isPresent;
 
     @ManyToOne
+    @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "resume_id")
     private Resume resume;
 }

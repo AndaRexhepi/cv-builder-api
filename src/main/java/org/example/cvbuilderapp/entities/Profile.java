@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -69,8 +70,9 @@ public class Profile{
     @PastOrPresent(message = "Birthdate must be in the past or present")
     private Date birthdate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resume_id")
+    @JsonManagedReference
     private Resume resume;
 }
 

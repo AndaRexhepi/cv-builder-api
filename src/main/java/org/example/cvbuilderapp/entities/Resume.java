@@ -22,34 +22,41 @@ public class Resume {
     private Long id;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
-    @NotNull
-    @OneToOne(mappedBy = "resume", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private Profile profile;
 
-    @OneToOne(mappedBy = "resume")
+    @OneToOne(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private Objective objective;
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Education> education;
 
     @OneToMany(mappedBy = "resume",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Experience> experience;
 
     @OneToMany(mappedBy = "resume",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Skill> skill;
 
     @OneToMany(mappedBy = "resume",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Pursuit> pursuit;
 
     @OneToMany(mappedBy = "resume",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Referee> reference;
 
     @OneToMany(mappedBy = "resume",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Accolade> accolade;
 }
 

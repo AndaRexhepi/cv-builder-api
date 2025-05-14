@@ -22,7 +22,7 @@ public class Objective {
     @Size(max = 500)
     private String objective;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resume_id")
     private Resume resume;
 }

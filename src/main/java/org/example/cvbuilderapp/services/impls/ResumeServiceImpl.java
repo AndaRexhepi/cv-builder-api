@@ -1,5 +1,7 @@
 package org.example.cvbuilderapp.services.impls;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +41,10 @@ public class ResumeServiceImpl implements ResumeService {
     public final RefereeRepository refereeRepository;
     public final AccoladeRepository accoladeRepository;
     public final ProfileRepository profileRepository;
-    public final ProfileService profileService;
     public final ResumeMapper mapper;
-    public final ProfileMapper profileMapper;
+
+    @PersistenceContext  // Inject the EntityManager
+    private EntityManager entityManager;
 
     @Override
     public List<ResumeDto> findAll() {
@@ -70,6 +73,7 @@ public class ResumeServiceImpl implements ResumeService {
         if (request.getProfileId() != null) {
             Profile profile = profileRepository.findById(request.getProfileId())
                     .orElseThrow(() -> new ProfileNotFoundException(request.getProfileId()));
+            profile = entityManager.merge(profile);
             profile.setResume(resume);
             resume.setProfile(profile);
         }
@@ -77,48 +81,80 @@ public class ResumeServiceImpl implements ResumeService {
         if (request.getObjectiveId() != null){
             Objective objective = objectiveRepository.findById(request.getObjectiveId())
                     .orElseThrow(()-> new ObjectiveNotFoundException(request.getObjectiveId()));
+            objective = entityManager.merge(objective);
             objective.setResume(resume);
             resume.setObjective(objective);
         }
 
         if (request.getEducationIds()  != null){
             List<Education> educations = educationRepository.findAllById(request.getEducationIds());
-            educations.forEach( education -> education.setResume(resume));
+
+//            educations.forEach( education -> education.setResume(resume));
+
+            for (Education education : educations) {
+                education = entityManager.merge(education);
+                education.setResume(resume);
+            }
             resume.setEducation(educations);
         }
 
         if (request.getExperienceIds()  != null){
             List<Experience> experiences = experienceRepository.findAllById(request.getExperienceIds());
-            experiences.forEach( experience -> experience.setResume(resume));
+
+//            experiences.forEach( experience -> experience.setResume(resume));
+
+            for (Experience experience : experiences) {
+                experience = entityManager.merge(experience);
+                experience.setResume(resume);
+            }
             resume.setExperience(experiences);
         }
 
         if (request.getSkillIds() != null){
             List<Skill> skills = skillRepository.findAllById(request.getSkillIds());
-            skills.forEach(skill -> skill.setResume(resume));
+
+//            skills.forEach(skill -> skill.setResume(resume));
+
+            for (Skill skill : skills) {
+                skill = entityManager.merge(skill);
+                skill.setResume(resume);
+            }
             resume.setSkill(skills);
         }
 
         if (request.getPursuitIds() != null){
             List<Pursuit> pursuits = pursuitRepository.findAllById(request.getPursuitIds());
-            pursuits.forEach(pursuit -> pursuit.setResume(resume));
+//            pursuits.forEach(pursuit -> pursuit.setResume(resume));
+            for (Pursuit pursuit : pursuits) {
+                pursuit = entityManager.merge(pursuit);
+                pursuit.setResume(resume);
+            }
             resume.setPursuit(pursuits);
         }
 
         if (request.getReferenceIds() != null){
             List<Referee> referees = refereeRepository.findAllById(request.getReferenceIds());
-            referees.forEach(referee -> referee.setResume(resume));
+//            referees.forEach(referee -> referee.setResume(resume));
+            for (Referee referee : referees) {
+                referee = entityManager.merge(referee);
+                referee.setResume(resume);
+            }
             resume.setReference(referees);
         }
 
         if (request.getAccoladeIds() != null){
             List<Accolade> accolades = accoladeRepository.findAllById(request.getAccoladeIds());
-            accolades.forEach(accolade -> accolade.setResume(resume));
+//            accolades.forEach(accolade -> accolade.setResume(resume));
+
+            for (Accolade accolade : accolades) {
+                accolade = entityManager.merge(accolade);
+                accolade.setResume(resume);
+            }
             resume.setAccolade(accolades);
+
         }
 
         resumeRepository.save(resume);
-
 
         return mapper.toDto(resume);
     }
