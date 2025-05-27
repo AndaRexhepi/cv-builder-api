@@ -11,5 +11,4 @@ import org.example.cvbuilderapp.entities.Resume;
 public class SkillDto {
      private Long id;
      private String skill;
-     private Resume resume;
 }

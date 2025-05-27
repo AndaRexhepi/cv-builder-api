@@ -19,5 +19,4 @@ public class ProfileDto {
     private String city;
     private String zipCode;
     private String country;
-    private Resume resume;
 }

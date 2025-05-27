@@ -43,10 +43,12 @@ public class RefereeServiceImpl implements RefereeService {
         var refereeFromDb = refereeRepository.findById(id)
                 .orElseThrow(()-> new RefereeNotFoundException(id));
 
+        refereeFromDb.setFullName(request.getFullName());
         refereeFromDb.setDescription(request.getDescription());
         refereeFromDb.setRelationship(request.getRelationship());
         refereeFromDb.setJobTitle(request.getJobTitle());
 
+        refereeRepository.save(refereeFromDb);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -45,6 +46,7 @@ public class Accolade {
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     private Resume resume;
 
 

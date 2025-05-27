@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class Skill {
     @ManyToOne
     @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "resume_id")
-    @JsonManagedReference
+    @JsonIgnore
+//    @JsonManagedReference
     private Resume resume;
 }

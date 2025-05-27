@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -72,7 +73,8 @@ public class Profile{
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resume_id")
-    @JsonManagedReference
+    @JsonIgnore
+//    @JsonManagedReference
     private Resume resume;
 }
 

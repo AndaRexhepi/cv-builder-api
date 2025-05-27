@@ -16,5 +16,5 @@ public class AccoladeDto {
     private String organization;
     private String description;
     private LocalDate issueDate;
-    private Resume resume;
+
 }

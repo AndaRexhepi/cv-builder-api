@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class Objective {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resume_id")
+    @JsonIgnore
     private Resume resume;
 }
 

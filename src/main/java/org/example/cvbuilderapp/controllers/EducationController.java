@@ -6,6 +6,7 @@ import org.example.cvbuilderapp.dtos.education.CreateEducationRequest;
 import org.example.cvbuilderapp.dtos.education.EducationDto;
 import org.example.cvbuilderapp.dtos.education.UpdateEducationRequest;
 import org.example.cvbuilderapp.services.interfaces.EducationService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

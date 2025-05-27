@@ -2,9 +2,12 @@ package org.example.cvbuilderapp.controllers;
 
 import org.example.cvbuilderapp.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -24,6 +27,12 @@ public class ErrorController {
 //        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST); // 400
 //    }
 
+    @ResponseBody
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public void handleHttpMediaTypeNotAcceptableException() {
+        System.out.println("acceptable MIME type:" + MediaType.APPLICATION_JSON_VALUE);
+    }
+
     // Exception for general errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
@@ -32,6 +41,8 @@ public class ErrorController {
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
+
+
 
 //    // Exception for resource not found errors
 //    @ExceptionHandler(RuntimeException.class)

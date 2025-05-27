@@ -20,5 +20,5 @@ public class EducationDto {
     private LocalDate endDate;
     private String description;
     private Boolean isPresent;
-    private Resume resume;
+
 }

@@ -11,5 +11,5 @@ import org.example.cvbuilderapp.entities.Resume;
 public class ObjectiveDto {
     private Long id;
     private String objective;
-    private Resume resume;
+
 }

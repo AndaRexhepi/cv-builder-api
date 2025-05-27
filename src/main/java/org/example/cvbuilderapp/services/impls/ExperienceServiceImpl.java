@@ -43,6 +43,7 @@ public class ExperienceServiceImpl implements ExperienceService {
         var experienceFromDb = experienceRepository.findById(id)
                 .orElseThrow(()-> new ExperienceNotFoundException(id));
 
+        experienceFromDb.setTitle(experienceDto.getTitle());
         experienceFromDb.setCompany(experienceDto.getCompany());
         experienceFromDb.setStartDate(experienceDto.getStartDate());
         experienceFromDb.setEndDate(experienceDto.getEndDate());

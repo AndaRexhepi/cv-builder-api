@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -43,9 +44,8 @@ public class User {
     @NotNull
     private String password;
 
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private List<Resume> resume;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resume> resume = new ArrayList<>();
 
 }
 

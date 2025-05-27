@@ -6,6 +6,7 @@ import org.example.cvbuilderapp.dtos.objective.CreateObjectiveRequest;
 import org.example.cvbuilderapp.dtos.objective.ObjectiveDto;
 import org.example.cvbuilderapp.dtos.objective.UpdateObjectiveRequest;
 import org.example.cvbuilderapp.services.interfaces.ObjectiveService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class ObjectiveController {
         return ResponseEntity.ok(objectiveService.findById(id));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ObjectiveDto> create(@Valid @RequestBody CreateObjectiveRequest objectiveDto) {
         return ResponseEntity.ok(objectiveService.create(objectiveDto));
     }

@@ -14,5 +14,4 @@ public class RefereeDto {
     private String relationship;
     private String jobTitle;
     private String description;
-    private Resume resume;
 }

@@ -1,5 +1,6 @@
 package org.example.cvbuilderapp.dtos.education;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,7 @@ public class CreateEducationRequest {
     private LocalDate endDate;
     private String description;
     private Boolean isPresent;
+
+//    @JsonBackReference("resume-education")
     private Resume resume;
 }

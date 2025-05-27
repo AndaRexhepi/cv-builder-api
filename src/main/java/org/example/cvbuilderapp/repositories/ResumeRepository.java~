@@ -18,14 +18,14 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     @Query("DELETE FROM resumes r WHERE r.user.id = :userId")
     void deleteByUserId(Long userId);
 
-//    @Override
-//    @EntityGraph(attributePaths = {
-//            "profile", "objective",         // OneToOne relationships
-//            "education", "experience",      // OneToMany relationships
-//            "skill", "pursuit",
-//            "reference", "accolade"
-//    })
-//    List<Resume> findAll();
+    @Override
+    @EntityGraph(attributePaths = {
+            "profile", "objective",         // OneToOne relationships
+            "education", "experience",      // OneToMany relationships
+            "skill", "pursuit",
+            "reference", "accolade"
+    })
+    List<Resume> findAll();
 
 //    @Query("SELECT DISTINCT r FROM resumes r " + // 'resumes' should match your @Entity(name="resumes")
 //            "LEFT JOIN FETCH r.profile " +

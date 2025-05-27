@@ -1,5 +1,8 @@
 package org.example.cvbuilderapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
@@ -54,6 +57,8 @@ public class Education {
     private Boolean isPresent;
 
     @ManyToOne
+//    @JsonManagedReference("resume-education")
+    @JsonIgnore
     @Cascade({CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "resume_id")
     private Resume resume;

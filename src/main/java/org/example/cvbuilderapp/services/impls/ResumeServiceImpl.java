@@ -2,9 +2,10 @@ package org.example.cvbuilderapp.services.impls;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.example.cvbuilderapp.dtos.resume.CreateResumeRequest;
 import org.example.cvbuilderapp.dtos.resume.ResumeDto;
 import org.example.cvbuilderapp.dtos.resume.UpdateResumeRequest;
@@ -13,15 +14,11 @@ import org.example.cvbuilderapp.exceptions.objective.ObjectiveNotFoundException;
 import org.example.cvbuilderapp.exceptions.profile.ProfileNotFoundException;
 import org.example.cvbuilderapp.exceptions.resume.ResumeNotFoundException;
 import org.example.cvbuilderapp.exceptions.user.UserNotFoundException;
-import org.example.cvbuilderapp.mappers.impls.ProfileMapper;
 import org.example.cvbuilderapp.mappers.impls.ResumeMapper;
 import org.example.cvbuilderapp.repositories.*;
-import org.example.cvbuilderapp.services.interfaces.ProfileService;
 import org.example.cvbuilderapp.services.interfaces.ResumeService;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -46,6 +43,7 @@ public class ResumeServiceImpl implements ResumeService {
     @PersistenceContext  // Inject the EntityManager
     private EntityManager entityManager;
 
+    @Transactional(readOnly = true)
     @Override
     public List<ResumeDto> findAll() {
         return mapper.toDto(resumeRepository.findAll());

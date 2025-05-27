@@ -20,5 +20,5 @@ public class ExperienceDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isPresent;
-    private Resume resume;
+
 }
