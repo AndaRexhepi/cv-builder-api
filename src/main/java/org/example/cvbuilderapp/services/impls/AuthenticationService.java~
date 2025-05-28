@@ -1,0 +1,4 @@
+package org.example.cvbuilderapp.services.impls;
+
+public class AuthenticationService {
+}

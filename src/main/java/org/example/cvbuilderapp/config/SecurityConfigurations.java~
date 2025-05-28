@@ -1,0 +1,107 @@
+package org.example.cvbuilderapp.config;
+
+import org.example.cvbuilderapp.entities.User;
+import org.example.cvbuilderapp.repositories.UserRepository;
+import org.example.cvbuilderapp.security.AppUserDetailsService;
+import org.example.cvbuilderapp.security.JwtAuthenticationFilter;
+import org.example.cvbuilderapp.services.interfaces.AuthenticationService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.example.cvbuilderapp.entities.security.Permission.ADMIN_READ;
+import static org.example.cvbuilderapp.entities.security.Permission.ADMIN_WRITE;
+import static org.example.cvbuilderapp.entities.security.Role.ADMIN;
+import static org.example.cvbuilderapp.entities.security.Role.USER;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigurations {
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authentication) {
+        return new JwtAuthenticationFilter(authentication);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers("api/v1/resumes/**").hasAnyRole(ADMIN.name())
+
+                .requestMatchers(HttpMethod.GET, "api/v1/resumes/**")
+                .hasAnyAuthority(ADMIN_READ.name())
+                .requestMatchers(HttpMethod.POST, "api/v1/resumes/**")
+                .hasAnyAuthority(ADMIN_WRITE.name())
+                .requestMatchers(HttpMethod.PUT, "api/v1/resumes/**")
+                .hasAnyAuthority(ADMIN_WRITE.name())
+                .requestMatchers(HttpMethod.DELETE, "api/v1/resumes/**")
+                .hasAnyAuthority(ADMIN_WRITE.name())
+
+                        .anyRequest().authenticated())
+
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {}) // Enable CORS with the bean from CorsConfig
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                // para se me shku ne filter shtoje jwtAuthenticationFilter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT per ate e perdorim auth Stateless edhe e bejme disable CSRF
+
+        return httpSecurity.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        AppUserDetailsService appUserDetailsService = new AppUserDetailsService(userRepository);
+
+        String email = "user@test.com";
+
+
+        if (userRepository.existsUserByEmail(email)) {
+            return appUserDetailsService;
+        } else{
+            var user = User.builder()
+                    .name("User")
+                    .email(email)
+                    .role(USER)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+             userRepository.save(user);
+        }
+
+//        userRepository.findByEmail(email)
+//                .orElseGet(() -> {
+//                    var user = User.builder()
+//                            .name("User")
+//                            .email(email)
+//                            .role(USER)
+//                            .password(passwordEncoder().encode("password"))
+//                            .build();
+//
+//                    return userRepository.save(user);
+//                });
+
+        return appUserDetailsService;
+   }
+}

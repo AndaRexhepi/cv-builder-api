@@ -1,13 +1,10 @@
 package org.example.cvbuilderapp.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.example.cvbuilderapp.entities.security.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "users")
+@Builder
 public class User {
 
 
@@ -43,6 +41,11 @@ public class User {
     @Column(name="password",nullable = false, length = 100)
     @NotNull
     private String password;
+
+
+    @Column(name = "role", length = 100)
+    @NotNull
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resume> resume = new ArrayList<>();
