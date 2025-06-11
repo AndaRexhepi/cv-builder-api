@@ -1,6 +1,7 @@
 package org.example.cvbuilderapp.services.interfaces;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseService<T, R, A, Long> {
     List<T> findAll();
@@ -12,4 +13,6 @@ public interface BaseService<T, R, A, Long> {
     void update(Long id, A request);
 
     void delete(Long id);
+
+    Optional<T> findByResumeId(Long resumeId);
 }

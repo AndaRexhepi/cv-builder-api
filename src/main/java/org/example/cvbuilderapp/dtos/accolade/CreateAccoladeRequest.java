@@ -15,5 +15,5 @@ public class CreateAccoladeRequest {
     private String organization;
     private String description;
     private LocalDate issueDate;
-    private Resume resume;
+    private Long resumeId;
 }

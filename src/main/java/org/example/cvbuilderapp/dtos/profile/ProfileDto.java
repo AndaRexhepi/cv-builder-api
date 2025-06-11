@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.cvbuilderapp.entities.Resume;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +19,8 @@ public class ProfileDto {
     private String email;
     private String phoneNumber;
     private String address;
+    private LocalDate birthdate;
+    private String nationality;
     private String city;
     private String zipCode;
     private String country;

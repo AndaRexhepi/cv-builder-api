@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -81,6 +82,11 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.delete(userFromDb.get());
         resumeRepository.deleteByUserId(id);
+    }
+
+    @Override
+    public Optional<UserDto> findByResumeId(Long resumeId) {
+        return userRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 
 

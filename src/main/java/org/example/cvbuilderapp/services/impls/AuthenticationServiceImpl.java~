@@ -30,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Value("${jwt.secret}")
     private String secretKey;
+    private final long expiresInMs = 86400000L;
 
 
     @Override
@@ -51,7 +52,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         claims.put("name", ((AppUserDetails) userDetails).getUser().getName());
         claims.put("role", ((AppUserDetails) userDetails).getUser().getRole().name());
 
-        long expiresInMs = 86400000L;
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())

@@ -1,0 +1,10 @@
+ALTER TABLE pursuits
+    DROP CONSTRAINT fk14mjrgwboc7xpouwq1asi6crl;
+
+ALTER TABLE resumes
+    ADD title VARCHAR(100);
+
+ALTER TABLE resumes
+    ALTER COLUMN title SET NOT NULL;
+
+DROP TABLE pursuits CASCADE;

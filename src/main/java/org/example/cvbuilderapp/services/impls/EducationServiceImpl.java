@@ -11,6 +11,7 @@ import org.example.cvbuilderapp.services.interfaces.EducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +61,10 @@ public class EducationServiceImpl implements EducationService {
         var educationFromDb = educationRepository.findById(id)
                 .orElseThrow(()-> new EducationNotFoundException(id));
         educationRepository.delete(educationFromDb);
+    }
+
+    @Override
+    public Optional<EducationDto> findByResumeId(Long resumeId) {
+        return educationRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.warn("Invalid token {}", e.getMessage());
         }
 
-
+        // E aktivizon filterin
         filterChain.doFilter(request, response);
     }
 

@@ -15,6 +15,7 @@ public class ResumeDto {
     private Long id;
     private Long profileId;
     private Long objectiveId;
+    private String title;
     private List<Long> educationIds = new ArrayList<>();
     private List<Long> experienceIds = new ArrayList<>();
     private List<Long> skillIds = new ArrayList<>();

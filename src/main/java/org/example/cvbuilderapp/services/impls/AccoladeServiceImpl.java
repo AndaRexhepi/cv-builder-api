@@ -11,6 +11,8 @@ import org.example.cvbuilderapp.services.interfaces.AccoladeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AccoladeServiceImpl implements AccoladeService {
@@ -57,5 +59,10 @@ public class AccoladeServiceImpl implements AccoladeService {
         var accoladeFromDb = accoladeRepository.findById(id)
                 .orElseThrow(()-> new AccoladeNotFoundException(id));
         accoladeRepository.delete(accoladeFromDb);
+    }
+
+    @Override
+    public Optional<AccoladeDto> findByResumeId(Long resumeId) {
+        return accoladeRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

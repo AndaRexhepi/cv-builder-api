@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.cvbuilderapp.entities.Resume;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,5 +18,5 @@ public class UserDto {
     private String name;
     private String surname;
     private String email;
-    private List<Long> resumeIds;
+    private List<Long> resumeIds = new ArrayList<>();
 }

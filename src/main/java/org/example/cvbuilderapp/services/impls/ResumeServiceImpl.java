@@ -21,7 +21,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,7 +33,6 @@ public class ResumeServiceImpl implements ResumeService {
     public final ResumeRepository resumeRepository;
     public final UserRepository userRepository;
     public final EducationRepository educationRepository;
-    public final PursuitRepository pursuitRepository;
     public final ExperienceRepository  experienceRepository;
     public final SkillRepository skillRepository;
     public final ObjectiveRepository objectiveRepository;
@@ -120,15 +121,6 @@ public class ResumeServiceImpl implements ResumeService {
             resume.setSkill(skills);
         }
 
-        if (request.getPursuitIds() != null){
-            List<Pursuit> pursuits = pursuitRepository.findAllById(request.getPursuitIds());
-//            pursuits.forEach(pursuit -> pursuit.setResume(resume));
-            for (Pursuit pursuit : pursuits) {
-                pursuit = entityManager.merge(pursuit);
-                pursuit.setResume(resume);
-            }
-            resume.setPursuit(pursuits);
-        }
 
         if (request.getReferenceIds() != null){
             List<Referee> referees = refereeRepository.findAllById(request.getReferenceIds());
@@ -150,6 +142,10 @@ public class ResumeServiceImpl implements ResumeService {
             }
             resume.setAccolade(accolades);
 
+        }
+
+        if (request.getTitle() != null) {
+            resume.setTitle(request.getTitle());
         }
 
         resumeRepository.save(resume);
@@ -176,6 +172,10 @@ public class ResumeServiceImpl implements ResumeService {
             resumeFromDb.setObjective(objective);
         }
 
+        if (request.getTitle() != null) {
+            resumeFromDb.setTitle(request.getTitle());
+        }
+
         updateResumeCollection(
                 resumeFromDb,
                 resumeFromDb.getEducation(),
@@ -200,13 +200,6 @@ public class ResumeServiceImpl implements ResumeService {
                 (skill, resume) -> skill.setResume(resume)
         );
 
-        updateResumeCollection(
-                resumeFromDb,
-                resumeFromDb.getPursuit(),
-                request.getPursuitIds(),
-                pursuitRepository,
-                (pursuit, resume) -> pursuit.setResume(resume)
-        );
 
         updateResumeCollection(
                 resumeFromDb,
@@ -231,6 +224,11 @@ public class ResumeServiceImpl implements ResumeService {
         var resumeFromDb = resumeRepository.findById(id)
                 .orElseThrow(()-> new ResumeNotFoundException(id));
         resumeRepository.delete(resumeFromDb);
+    }
+
+    @Override
+    public Optional<ResumeDto> findByResumeId(Long resumeId) {
+        return Optional.empty();
     }
 
 
@@ -267,6 +265,12 @@ public class ResumeServiceImpl implements ResumeService {
                 currentCollection.addAll(newEntities);
             }
         }
+    }
+
+
+    @Override
+    public Optional<List<ResumeDto>> findByUserId(Long userId) {
+        return resumeRepository.findByUserId(userId).map(mapper::toDto);
     }
 }
 

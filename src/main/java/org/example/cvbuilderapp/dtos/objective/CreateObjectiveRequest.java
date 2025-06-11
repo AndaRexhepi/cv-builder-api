@@ -10,5 +10,5 @@ import org.example.cvbuilderapp.entities.Resume;
 @AllArgsConstructor
 public class CreateObjectiveRequest {
     private String objective;
-    private Resume resume;
+    private Long resumeId;
 }

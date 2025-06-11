@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,8 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.example.cvbuilderapp.entities.security.Permission.ADMIN_READ;
-import static org.example.cvbuilderapp.entities.security.Permission.ADMIN_WRITE;
+import static org.example.cvbuilderapp.entities.security.Permission.*;
 import static org.example.cvbuilderapp.entities.security.Role.ADMIN;
 import static org.example.cvbuilderapp.entities.security.Role.USER;
 
@@ -29,8 +29,13 @@ import static org.example.cvbuilderapp.entities.security.Role.USER;
 public class SecurityConfigurations {
 
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
+    public AuthenticationManager authenticationManagerBean( UserDetailsService userDetailsService,
+                                                            PasswordEncoder passwordEncoder) throws Exception {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(authenticationProvider);
     }
 
     @Bean
@@ -46,27 +51,29 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
         httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                .requestMatchers("api/v1/resumes/**").hasAnyRole(ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/**", "/api/v1/users").permitAll()
+
+                .requestMatchers("api/v1/resumes/**").hasAnyRole(ADMIN.name(), USER.name())
 
                 .requestMatchers(HttpMethod.GET, "api/v1/resumes/**")
-                .hasAnyAuthority(ADMIN_READ.name())
+                .hasAnyAuthority(ADMIN_READ.name(), USER_READ.name())
                 .requestMatchers(HttpMethod.POST, "api/v1/resumes/**")
-                .hasAnyAuthority(ADMIN_WRITE.name())
+                .hasAnyAuthority(ADMIN_WRITE.name(), USER_WRITE.name())
                 .requestMatchers(HttpMethod.PUT, "api/v1/resumes/**")
-                .hasAnyAuthority(ADMIN_WRITE.name())
+                .hasAnyAuthority(ADMIN_WRITE.name(), USER_WRITE.name())
                 .requestMatchers(HttpMethod.DELETE, "api/v1/resumes/**")
-                .hasAnyAuthority(ADMIN_WRITE.name())
+                .hasAnyAuthority(ADMIN_WRITE.name(), USER_WRITE.name())
 
-                        .anyRequest().authenticated())
+
+                .anyRequest().authenticated())
 
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {}) // Enable CORS with the bean from CorsConfig
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // para se me shku ne filter shtoje jwtAuthenticationFilter
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT per ate e perdorim auth Stateless edhe e bejme disable CSRF
+
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -76,33 +83,21 @@ public class SecurityConfigurations {
         AppUserDetailsService appUserDetailsService = new AppUserDetailsService(userRepository);
 
         String email = "user@test.com";
+        userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    var user = User.builder()
+                            .name("User")
+                            .surname("Test")
+                            .email(email)
+                            .role(USER)
+                            .password(passwordEncoder().encode("password"))
+                            .build();
 
-
-        if (userRepository.existsUserByEmail(email)) {
-            return appUserDetailsService;
-        } else{
-            var user = User.builder()
-                    .name("User Name")
-                    .surname("User Surname")
-                    .email(email)
-                    .role(USER)
-                    .password(passwordEncoder().encode("password"))
-                    .build();
-             userRepository.save(user);
-        }
-
-//        userRepository.findByEmail(email)
-//                .orElseGet(() -> {
-//                    var user = User.builder()
-//                            .name("User")
-//                            .email(email)
-//                            .role(USER)
-//                            .password(passwordEncoder().encode("password"))
-//                            .build();
-//
-//                    return userRepository.save(user);
-//                });
+                    return userRepository.save(user);
+                });
 
         return appUserDetailsService;
-   }
+    }
+
+
 }

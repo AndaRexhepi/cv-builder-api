@@ -11,6 +11,7 @@ import org.example.cvbuilderapp.services.interfaces.ExperienceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +61,10 @@ public class ExperienceServiceImpl implements ExperienceService {
         var experienceFromDb = experienceRepository.findById(id)
                 .orElseThrow(()-> new ExperienceNotFoundException(id));
         experienceRepository.delete(experienceFromDb);
+    }
+
+    @Override
+    public Optional<ExperienceDto> findByResumeId(Long resumeId) {
+        return experienceRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

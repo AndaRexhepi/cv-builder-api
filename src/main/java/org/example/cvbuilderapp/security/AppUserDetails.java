@@ -4,14 +4,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.cvbuilderapp.entities.User;
 import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
+
 
 @Getter
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
-    private final User user;
 
+    private final User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -30,4 +32,9 @@ public class AppUserDetails implements UserDetails {
 
     public Long getId() {
         return user.getId();
-    }}
+    }
+
+    public User getUser() {
+        return user;
+    }
+}

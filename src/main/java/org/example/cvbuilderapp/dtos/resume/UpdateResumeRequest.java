@@ -14,6 +14,7 @@ public class UpdateResumeRequest {
 
     private Long profileId;
     private Long objectiveId;
+    private String title;
     private List<Long> educationIds;
     private List<Long> experienceIds;
     private List<Long> skillIds;

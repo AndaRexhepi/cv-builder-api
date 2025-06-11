@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long> {
@@ -18,23 +19,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     @Query("DELETE FROM resumes r WHERE r.user.id = :userId")
     void deleteByUserId(Long userId);
 
-//    @Override
-//    @EntityGraph(attributePaths = {
-//            "profile", "objective",         // OneToOne relationships
-//            "education", "experience",      // OneToMany relationships
-//            "skill", "pursuit",
-//            "reference", "accolade"
-//    })
-//    List<Resume> findAll();
-
-//    @Query("SELECT DISTINCT r FROM resumes r " + // 'resumes' should match your @Entity(name="resumes")
-//            "LEFT JOIN FETCH r.profile " +
-//            "LEFT JOIN FETCH r.objective " +
-//            "LEFT JOIN FETCH r.education " +
-//            "LEFT JOIN FETCH r.experience " +
-//            "LEFT JOIN FETCH r.skill " +
-//            "LEFT JOIN FETCH r.pursuit " +
-//            "LEFT JOIN FETCH r.reference " +
-//            "LEFT JOIN FETCH r.accolade")
-//    List<Resume> findAllWithDetails();
+    Optional<List<Resume>> findByUserId(Long userId);
 }

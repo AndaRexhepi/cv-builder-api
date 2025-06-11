@@ -12,6 +12,7 @@ import org.example.cvbuilderapp.services.interfaces.SkillService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +57,10 @@ public class SkillServiceImpl implements SkillService {
         var skillFromDb = skillRepository.findById(id)
                 .orElseThrow(()-> new SkillNotFoundException(id));
         skillRepository.delete(skillFromDb);
+    }
+
+    @Override
+    public Optional<SkillDto> findByResumeId(Long resumeId) {
+        return skillRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

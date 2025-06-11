@@ -10,5 +10,5 @@ import org.example.cvbuilderapp.entities.Resume;
 @NoArgsConstructor
 public class CreateSkillRequest {
     private String skill;
-    private Resume resume;
+    private Long resumeId;
 }

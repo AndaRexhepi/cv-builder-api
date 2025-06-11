@@ -13,6 +13,7 @@ public class CreateResumeRequest {
     private Long userId;
     private Long profileId;
     private Long objectiveId;
+    private String title;
     private List<Long> educationIds;
     private List<Long> experienceIds;
     private List<Long> skillIds;

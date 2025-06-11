@@ -13,5 +13,5 @@ public class CreateRefereeRequest {
     private String relationship;
     private String jobTitle;
     private String description;
-    private Resume resume;
+    private Long resumeId;
 }

@@ -43,6 +43,7 @@ public class User {
     private String password;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 100)
     @NotNull
     private Role role;

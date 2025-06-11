@@ -18,7 +18,5 @@ public class CreateEducationRequest {
     private LocalDate endDate;
     private String description;
     private Boolean isPresent;
-
-//    @JsonBackReference("resume-education")
-    private Resume resume;
+    private Long resumeId;
 }

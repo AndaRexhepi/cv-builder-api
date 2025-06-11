@@ -11,6 +11,7 @@ import org.example.cvbuilderapp.services.interfaces.RefereeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,5 +57,10 @@ public class RefereeServiceImpl implements RefereeService {
         var refereeFromDb = refereeRepository.findById(id)
                 .orElseThrow(()-> new RefereeNotFoundException(id));
         refereeRepository.delete(refereeFromDb);
+    }
+
+    @Override
+    public Optional<RefereeDto> findByResumeId(Long resumeId) {
+        return refereeRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

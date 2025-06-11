@@ -3,17 +3,17 @@ package org.example.cvbuilderapp.entities.security;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static org.example.cvbuilderapp.entities.security.Permission.*;
+
 @Getter
 @RequiredArgsConstructor
 public enum Role {
 
     ADMIN(Set.of(ADMIN_READ, ADMIN_WRITE)),
-    USER(Collections.emptySet());
+    USER(Set.of(USER_READ, USER_WRITE));
 
     
     private final Set<Permission> permissions;

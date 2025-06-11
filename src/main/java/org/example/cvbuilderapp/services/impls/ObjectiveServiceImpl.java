@@ -11,6 +11,7 @@ import org.example.cvbuilderapp.services.interfaces.ObjectiveService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +55,10 @@ public class ObjectiveServiceImpl implements ObjectiveService {
         var objectiveFromDb = objectiveRepository.findById(id)
                 .orElseThrow(()-> new ObjectiveNotFoundException(id));
         objectiveRepository.delete(objectiveFromDb);
+    }
+
+    @Override
+    public Optional<ObjectiveDto> findByResumeId(Long resumeId) {
+        return objectiveRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

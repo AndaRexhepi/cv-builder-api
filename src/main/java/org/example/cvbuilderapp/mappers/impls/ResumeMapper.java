@@ -30,7 +30,6 @@ public interface ResumeMapper extends BaseMapper<Resume, ResumeDto, CreateResume
     @Mapping(target = "educationIds", expression = "java(mapIds(resume.getEducation()))")
     @Mapping(target = "experienceIds", expression = "java(mapIds(resume.getExperience()))")
     @Mapping(target = "skillIds", expression = "java(mapIds(resume.getSkill()))")
-    @Mapping(target = "pursuitIds", expression = "java(mapIds(resume.getPursuit()))")
     @Mapping(target = "referenceIds", expression = "java(mapIds(resume.getReference()))")
     @Mapping(target = "accoladeIds", expression = "java(mapIds(resume.getAccolade()))")
     ResumeDto toDto(Resume resume);
@@ -40,7 +39,6 @@ public interface ResumeMapper extends BaseMapper<Resume, ResumeDto, CreateResume
     @Mapping(target = "educationIds", expression = "java(mapIds(resume.getEducation()))")
     @Mapping(target = "experienceIds", expression = "java(mapIds(resume.getExperience()))")
     @Mapping(target = "skillIds", expression = "java(mapIds(resume.getSkill()))")
-    @Mapping(target = "pursuitIds", expression = "java(mapIds(resume.getPursuit()))")
     @Mapping(target = "referenceIds", expression = "java(mapIds(resume.getReference()))")
     @Mapping(target = "accoladeIds", expression = "java(mapIds(resume.getAccolade()))")
     List<ResumeDto> toDto(List<Resume> resume);

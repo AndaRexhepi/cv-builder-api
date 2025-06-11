@@ -4,8 +4,6 @@ import org.example.cvbuilderapp.dtos.profile.CreateProfileRequest;
 import org.example.cvbuilderapp.dtos.profile.ProfileDto;
 import org.example.cvbuilderapp.dtos.profile.UpdateProfileRequest;
 
-import java.util.Optional;
-
 public interface ProfileService extends BaseService<ProfileDto, CreateProfileRequest, UpdateProfileRequest, Long> {
 
 }

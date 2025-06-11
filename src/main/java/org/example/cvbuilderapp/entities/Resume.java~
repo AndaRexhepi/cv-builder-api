@@ -30,6 +30,7 @@ public class Resume {
 
     @Column(name = "title", length = 100)
     @Size(max = 100)
+    @NotNull
     private String title;
 
     @OneToOne(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)

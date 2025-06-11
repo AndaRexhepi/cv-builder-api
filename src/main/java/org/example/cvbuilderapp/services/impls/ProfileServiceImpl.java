@@ -11,6 +11,7 @@ import org.example.cvbuilderapp.services.interfaces.ProfileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +63,10 @@ public class ProfileServiceImpl implements ProfileService {
         var profileFromDb = profileRepository.findById(id)
                 .orElseThrow(()-> new ProfileNotFoundException(id));
         profileRepository.delete(profileFromDb);
+    }
+
+    @Override
+    public Optional<ProfileDto> findByResumeId(Long resumeId) {
+        return profileRepository.findByResumeId(resumeId).map(mapper::toDto);
     }
 }

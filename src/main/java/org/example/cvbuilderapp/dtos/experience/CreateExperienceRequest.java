@@ -19,5 +19,5 @@ public class CreateExperienceRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean isPresent;
-    private Resume resume;
+    private Long resumeId;
 }

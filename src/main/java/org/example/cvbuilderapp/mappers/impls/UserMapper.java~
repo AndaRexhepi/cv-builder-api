@@ -21,7 +21,7 @@ public interface UserMapper extends BaseMapper<User, UserDto, CreateUserRequest>
 
     default List<Long> mapResumeIds(List<Resume> resumes) {
         if (resumes == null) {
-            return new java.util.ArrayList<>();
+            return new java.util.ArrayList<>(); 
         }
         return resumes.stream()
                 .map(Resume::getId)
